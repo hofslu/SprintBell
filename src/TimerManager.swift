@@ -93,11 +93,13 @@ class TimerManager: ObservableObject {
             logSession(startTime: startTime, wasCompleted: true, wasInterrupted: false)
         }
         
+        // Play completion sound
+        AudioManager.shared.playCompletionSound()
+        
         stopTimer()
         sessionStartTime = nil // Clear session tracking
         persistence.clearTimerState() // Clear saved state when completed
         print("Timer completed! 🎉")
-        // TODO: In future sprints, we'll add sound and notifications here
     }
     
     private func updateDisplay() {

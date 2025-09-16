@@ -14,7 +14,10 @@ let package = Package(
         .executableTarget(
             name: "SprintBell",
             path: "src",
-            exclude: ["Info.plist"]
+            exclude: ["Info.plist"],
+            resources: [
+                .copy("Audio/alarm.mp3")
+            ]
         )
     ]
 )
