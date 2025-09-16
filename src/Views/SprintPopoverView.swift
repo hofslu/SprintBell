@@ -18,8 +18,8 @@ struct SprintPopoverView: View {
                 // Header with toggles
                 HStack {
                     // Sound toggle button
-                    Button(action: { timerManager.setSoundEnabled(!timerManager.getSoundEnabled()) }) {
-                        Image(systemName: timerManager.getSoundEnabled() ? "speaker.wave.2.fill" : "speaker.slash.fill")
+                    Button(action: { timerManager.setSoundEnabled(!timerManager.soundEnabled) }) {
+                        Image(systemName: timerManager.soundEnabled ? "speaker.wave.2.fill" : "speaker.slash.fill")
                             .font(.system(size: 16, weight: .medium))
                             .foregroundColor(currentColorScheme == .dark ? .blue : .blue)
                             .background(
@@ -31,7 +31,7 @@ struct SprintPopoverView: View {
                             )
                     }
                     .buttonStyle(.plain)
-                    .help("Sound: \(timerManager.getSoundEnabled() ? "On" : "Off")")
+                    .help("Sound: \(timerManager.soundEnabled ? "On" : "Off")")
                     
                     Spacer()
                     
@@ -231,7 +231,7 @@ struct PresetButtonsView: View {
                 
                 Button("Custom") {
                     // TODO: Show custom duration picker in future
-                    timerManager.startNewSession(duration: 30 * 60, title: "Focus Session", clearSubGoals: false)
+                    timerManager.startNewSession(duration: 2, title: "Focus Session", clearSubGoals: false)
                 }
                 .buttonStyle(.bordered)
                 .tint(colorScheme == .dark ? .orange.opacity(0.7) : .orange)

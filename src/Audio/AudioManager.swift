@@ -8,6 +8,10 @@ import AVFoundation
 import AudioToolbox
 #endif
 
+#if canImport(AppKit)
+import AppKit
+#endif
+
 /// Manages audio playback for timer completion sounds
 class AudioManager {
     static let shared = AudioManager()
@@ -22,19 +26,28 @@ class AudioManager {
     
     /// Plays the completion sound when timer reaches zero
     func playCompletionSound() {
+        print("🔊 AudioManager.playCompletionSound() called")
+        
         #if canImport(AVFoundation) && canImport(AudioToolbox)
+        print("🔊 AVFoundation and AudioToolbox available")
+        
         // Check if sound is enabled in preferences
-        guard TimerDefaults.shared.soundEnabled else { 
+        let soundEnabled = TimerDefaults.shared.soundEnabled
+        print("🔊 Sound enabled in preferences: \(soundEnabled)")
+        
+        guard soundEnabled else { 
             print("🔇 Sound disabled in preferences")
             return 
         }
         
+        print("🔊 Attempting to play custom sound first...")
         // Try to play custom sound first, fallback to system sound
         if !playCustomCompletionSound() {
+            print("🔊 Custom sound failed, trying system fallback...")
             playSystemFallbackSound()
         }
         #else
-        print("🔇 Audio playback not available on this platform")
+        print("🔇 Audio frameworks not available on this platform")
         #endif
     }
     
@@ -50,11 +63,7 @@ class AudioManager {
         }
         
         do {
-            // Configure audio session to not interrupt other apps
-            try AVAudioSession.sharedInstance().setCategory(.ambient, mode: .default)
-            try AVAudioSession.sharedInstance().setActive(true)
-            
-            // Create and configure audio player
+            // Create and configure audio player (AVAudioSession is iOS-only)
             audioPlayer = try AVAudioPlayer(contentsOf: soundURL)
             audioPlayer?.prepareToPlay()
             audioPlayer?.play()
@@ -76,9 +85,31 @@ class AudioManager {
     #if canImport(AudioToolbox)
     /// Plays system fallback sound when custom sound fails
     private func playSystemFallbackSound() {
-        // Use System Sound ID 1304 (Glass sound) as fallback
-        AudioServicesPlaySystemSound(1304)
-        print("🔔 Playing system fallback sound (Glass)")
+        print("🔊 Attempting to play system fallback sound...")
+        
+        // Try NSBeep first (most reliable)
+        #if canImport(AppKit)
+        NSSound.beep()
+        print("🔔 Played NSSound.beep()")
+        #endif
+        
+        // Also try system sound for good measure
+        AudioServicesPlaySystemSound(1013) // Text message sound
+        print("🔔 Played AudioServicesPlaySystemSound(1013)")
+        
+        // Alternative: Use afplay with system sound file
+        let process = Process()
+        process.launchPath = "/usr/bin/afplay"
+        process.arguments = ["/System/Library/Sounds/Glass.aiff"]
+        
+        do {
+            try process.run()
+            print("🔔 Played Glass.aiff via afplay")
+        } catch {
+            print("❌ Failed to play via afplay: \(error)")
+        }
+        
+        print("🔔 System fallback sound sequence completed")
     }
     #else
     private func playSystemFallbackSound() {
