@@ -3,7 +3,7 @@ import SwiftUI
 struct SprintPopoverView: View {
     @ObservedObject var timerManager: TimerManager
     @ObservedObject var themeManager: ThemeManager
-    @StateObject private var subGoalsManager = SubGoalsManager()
+    @ObservedObject private var subGoalsManager = SubGoalsManager.shared
     @State private var newGoalText = ""
     @Environment(\.colorScheme) private var systemColorScheme
     
@@ -171,12 +171,19 @@ struct TimerControlsView: View {
                 .shadow(color: .black.opacity(0.2), radius: 2, x: 0, y: 1)
             }
             
-            Button(action: { timerManager.resetTimer(duration: timerManager.remainingSeconds, title: timerManager.mainTitle) }) {
+            Button(action: { timerManager.resetToOriginal() }) {
                 Label("Reset", systemImage: "arrow.clockwise")
                     .font(.system(size: 14, weight: .medium))
             }
             .buttonStyle(.bordered)
             .tint(colorScheme == .dark ? .blue.opacity(0.8) : .blue)
+            
+            Button(action: { timerManager.startNewSession() }) {
+                Label("New", systemImage: "plus.circle")
+                    .font(.system(size: 14, weight: .medium))
+            }
+            .buttonStyle(.bordered)
+            .tint(colorScheme == .dark ? .purple.opacity(0.8) : .purple)
         }
     }
 }
@@ -193,20 +200,20 @@ struct PresetButtonsView: View {
             
             HStack(spacing: 8) {
                 Button("25 min") {
-                    timerManager.resetTimer(duration: 25 * 60, title: timerManager.mainTitle)
+                    timerManager.startNewSession(duration: 25 * 60, title: "Pomodoro Session", clearSubGoals: false)
                 }
                 .buttonStyle(.bordered)
                 .tint(colorScheme == .dark ? .blue.opacity(0.7) : .blue)
                 
                 Button("50 min") {
-                    timerManager.resetTimer(duration: 50 * 60, title: timerManager.mainTitle)
+                    timerManager.startNewSession(duration: 50 * 60, title: "Deep Work Session", clearSubGoals: false)
                 }
                 .buttonStyle(.bordered)
                 .tint(colorScheme == .dark ? .purple.opacity(0.7) : .purple)
                 
                 Button("Custom") {
                     // TODO: Show custom duration picker in future
-                    timerManager.resetTimer(duration: 30 * 60, title: timerManager.mainTitle)
+                    timerManager.startNewSession(duration: 30 * 60, title: "Focus Session", clearSubGoals: false)
                 }
                 .buttonStyle(.bordered)
                 .tint(colorScheme == .dark ? .orange.opacity(0.7) : .orange)
