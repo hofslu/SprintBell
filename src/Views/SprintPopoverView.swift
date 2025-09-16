@@ -81,7 +81,7 @@ struct SprintPopoverView: View {
             }
             .padding(20)
         }
-        .frame(width: 320, height: 450)
+        .frame(width: 320, height: 580) // Increased from 450 to 580 for less scrolling
         .background(backgroundGradient)
         .preferredColorScheme(themeManager.currentTheme.colorScheme) // Use theme manager
     }
