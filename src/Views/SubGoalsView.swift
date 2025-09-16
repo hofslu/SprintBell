@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct SubGoalsView: View {
-    @Binding var subGoals: [SubGoal]
+    @ObservedObject var subGoalsManager: SubGoalsManager
     let colorScheme: ColorScheme
     @State private var newGoalText = ""
     
@@ -14,7 +14,7 @@ struct SubGoalsView: View {
                 
                 Spacer()
                 
-                Text("\(completedGoalsCount)/\(subGoals.count)")
+                Text("\(subGoalsManager.completedGoalsCount)/\(subGoalsManager.totalGoalsCount)")
                     .font(.caption2)
                     .foregroundColor(colorScheme == .dark ? .white : .black)
                     .padding(.horizontal, 6)
@@ -25,7 +25,7 @@ struct SubGoalsView: View {
             
             // Goals list in a scrollable container
             VStack(alignment: .leading, spacing: 4) {
-                if subGoals.isEmpty {
+                if subGoalsManager.subGoals.isEmpty {
                     Text("No sub-goals yet. Add one below!")
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -33,12 +33,12 @@ struct SubGoalsView: View {
                         .padding(.vertical, 4)
                 } else {
                     // Limit height and make scrollable if needed
-                    ForEach(subGoals) { goal in
+                    ForEach(subGoalsManager.subGoals) { goal in
                         SubGoalRowView(
                             goal: goal,
                             colorScheme: colorScheme,
-                            onToggle: { toggleGoal(goal) },
-                            onDelete: { deleteGoal(goal) }
+                            onToggle: { subGoalsManager.toggleGoal(goal) },
+                            onDelete: { subGoalsManager.deleteGoal(goal) }
                         )
                     }
                 }
@@ -64,11 +64,11 @@ struct SubGoalsView: View {
     }
     
     private var completedGoalsCount: Int {
-        subGoals.filter { $0.isCompleted }.count
+        subGoalsManager.completedGoalsCount
     }
     
     private var progressBackgroundColor: Color {
-        if completedGoalsCount == subGoals.count && subGoals.count > 0 {
+        if completedGoalsCount == subGoalsManager.totalGoalsCount && subGoalsManager.totalGoalsCount > 0 {
             return colorScheme == .dark ? .green.opacity(0.3) : .green.opacity(0.2)
         } else {
             return colorScheme == .dark ? .white.opacity(0.2) : .secondary.opacity(0.1)
@@ -79,18 +79,16 @@ struct SubGoalsView: View {
         let trimmedText = newGoalText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedText.isEmpty else { return }
         
-        subGoals.append(SubGoal(text: trimmedText))
+        subGoalsManager.addGoal(trimmedText)
         newGoalText = ""
     }
     
     private func toggleGoal(_ goal: SubGoal) {
-        if let index = subGoals.firstIndex(where: { $0.id == goal.id }) {
-            subGoals[index].isCompleted.toggle()
-        }
+        subGoalsManager.toggleGoal(goal)
     }
     
     private func deleteGoal(_ goal: SubGoal) {
-        subGoals.removeAll { $0.id == goal.id }
+        subGoalsManager.deleteGoal(goal)
     }
 }
 

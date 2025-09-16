@@ -3,7 +3,7 @@ import SwiftUI
 struct SprintPopoverView: View {
     @ObservedObject var timerManager: TimerManager
     @ObservedObject var themeManager: ThemeManager
-    @State private var subGoals: [SubGoal] = []
+    @StateObject private var subGoalsManager = SubGoalsManager()
     @State private var newGoalText = ""
     @Environment(\.colorScheme) private var systemColorScheme
     
@@ -51,7 +51,7 @@ struct SprintPopoverView: View {
                     .background(dividerColor)
                 
                 // Sub-goals section (scrollable)
-                SubGoalsView(subGoals: $subGoals, colorScheme: currentColorScheme)
+                SubGoalsView(subGoalsManager: subGoalsManager, colorScheme: currentColorScheme)
                 
                 Spacer(minLength: 8)
                 
