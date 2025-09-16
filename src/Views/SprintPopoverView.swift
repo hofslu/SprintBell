@@ -15,9 +15,27 @@ struct SprintPopoverView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
-                // Header with theme toggle
+                // Header with toggles
                 HStack {
+                    // Sound toggle button
+                    Button(action: { timerManager.setSoundEnabled(!timerManager.soundEnabled) }) {
+                        Image(systemName: timerManager.soundEnabled ? "speaker.wave.2.fill" : "speaker.slash.fill")
+                            .font(.system(size: 16, weight: .medium))
+                            .foregroundColor(currentColorScheme == .dark ? .blue : .blue)
+                            .background(
+                                Circle()
+                                    .fill(currentColorScheme == .dark ? 
+                                          Color.blue.opacity(0.1) : 
+                                          Color.blue.opacity(0.1))
+                                    .frame(width: 28, height: 28)
+                            )
+                    }
+                    .buttonStyle(.plain)
+                    .help("Sound: \(timerManager.soundEnabled ? "On" : "Off")")
+                    
                     Spacer()
+                    
+                    // Theme toggle button
                     Button(action: { themeManager.toggleTheme() }) {
                         Image(systemName: themeManager.currentTheme.systemImage)
                             .font(.system(size: 16, weight: .medium))
@@ -213,7 +231,7 @@ struct PresetButtonsView: View {
                 
                 Button("Custom") {
                     // TODO: Show custom duration picker in future
-                    timerManager.startNewSession(duration: 30 * 60, title: "Focus Session", clearSubGoals: false)
+                    timerManager.startNewSession(duration: 2, title: "Focus Session", clearSubGoals: false)
                 }
                 .buttonStyle(.bordered)
                 .tint(colorScheme == .dark ? .orange.opacity(0.7) : .orange)

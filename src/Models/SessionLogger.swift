@@ -1,11 +1,9 @@
 import Foundation
-import os.log
 
 /// Handles session logging to JSONL format files
 class SessionLogger {
     static let shared = SessionLogger()
     
-    private let logger = Logger(subsystem: "com.sprintbell.app", category: "SessionLogger")
     private let fileManager = FileManager.default
     private let encoder: JSONEncoder
     
@@ -32,15 +30,15 @@ class SessionLogger {
             do {
                 let jsonData = try encoder.encode(sessionData)
                 guard let jsonString = String(data: jsonData, encoding: .utf8) else {
-                    logger.error("Failed to convert session data to string")
+                    print("❌ Failed to convert session data to string")
                     return
                 }
                 
                 try await writeToLogFile(jsonString)
-                logger.info("Session logged successfully: \(sessionData.sessionId)")
+                print("📝 Session logged successfully: \(sessionData.sessionId)")
                 
             } catch {
-                logger.error("Failed to log session: \(error.localizedDescription)")
+                print("❌ Failed to log session: \(error.localizedDescription)")
             }
         }
     }
@@ -67,7 +65,7 @@ class SessionLogger {
                     return date1 > date2 // Most recent first
                 }
         } catch {
-            logger.error("Failed to list log files: \(error.localizedDescription)")
+            print("❌ Failed to list log files: \(error.localizedDescription)")
             return []
         }
     }
@@ -120,7 +118,7 @@ class SessionLogger {
             let filesToDelete = logFiles.dropFirst(maxLogFiles - 1)
             for file in filesToDelete {
                 try fileManager.removeItem(at: file)
-                logger.info("Rotated old log file: \(file.lastPathComponent)")
+                print("🔄 Rotated old log file: \(file.lastPathComponent)")
             }
         }
     }

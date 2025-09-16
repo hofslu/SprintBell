@@ -6,6 +6,7 @@ class TimerManager: ObservableObject {
     @Published var isRunning: Bool = false
     @Published var mainTitle: String = "Focus Session"
     @Published var displayText: String = "SprintBell"
+    @Published var soundEnabled: Bool = true // Add published sound state
     
     private var timer: Timer?
     private var totalDuration: Int = 0
@@ -16,6 +17,9 @@ class TimerManager: ObservableObject {
     private let sessionLogger = SessionLogger.shared
     
     init() {
+        // Initialize published sound state from persistence
+        soundEnabled = persistence.soundEnabled
+        
         restoreTimerState()
         updateDisplay()
     }
@@ -93,11 +97,14 @@ class TimerManager: ObservableObject {
             logSession(startTime: startTime, wasCompleted: true, wasInterrupted: false)
         }
         
+        // Play completion sound
+        print("🔔 Timer completed! Attempting to play sound...")
+        AudioManager.shared.playCompletionSound()
+        
         stopTimer()
         sessionStartTime = nil // Clear session tracking
         persistence.clearTimerState() // Clear saved state when completed
         print("Timer completed! 🎉")
-        // TODO: In future sprints, we'll add sound and notifications here
     }
     
     private func updateDisplay() {
@@ -170,7 +177,9 @@ class TimerManager: ObservableObject {
     }
     
     func setSoundEnabled(_ enabled: Bool) {
-        persistence.soundEnabled = enabled
+        soundEnabled = enabled // Update published property
+        persistence.soundEnabled = enabled // Save to persistence
+        print("🔊 Sound enabled changed to: \(enabled)")
     }
     
     // MARK: - Enhanced Reset Methods
@@ -235,5 +244,14 @@ class TimerManager: ObservableObject {
             wasInterrupted: wasInterrupted,
             subGoalsSummary: subGoalsSummary
         )
+    }
+    
+    // MARK: - Test Methods
+    
+    /// Quick test method for sound system - starts a 2-second timer
+    func startSoundTest() {
+        print("🧪 Starting 2-second sound test...")
+        startNewSession(duration: 2, title: "Sound Test", clearSubGoals: true)
+        startTimer()
     }
 }
