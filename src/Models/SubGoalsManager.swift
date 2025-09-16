@@ -3,11 +3,13 @@ import SwiftUI
 
 /// Manages sub-goals with automatic UserDefaults persistence
 class SubGoalsManager: ObservableObject {
+    static let shared = SubGoalsManager()
+    
     @Published var subGoals: [SubGoal] = []
     
     private let persistence = TimerDefaults.shared
     
-    init() {
+    private init() {
         loadSubGoals()
     }
     

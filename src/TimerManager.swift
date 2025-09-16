@@ -11,6 +11,10 @@ class TimerManager: ObservableObject {
     private var totalDuration: Int = 0
     private let persistence = TimerDefaults.shared
     
+    // MARK: - Session Tracking
+    private var sessionStartTime: Date?
+    private let sessionLogger = SessionLogger.shared
+    
     init() {
         restoreTimerState()
         updateDisplay()
@@ -22,6 +26,7 @@ class TimerManager: ObservableObject {
         guard !isRunning else { return }
         
         isRunning = true
+        sessionStartTime = Date() // Track session start
         
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
             self?.tick()
@@ -33,9 +38,15 @@ class TimerManager: ObservableObject {
     }
     
     func stopTimer() {
+        // Log session if it was running and had a start time
+        if isRunning, let startTime = sessionStartTime {
+            logSession(startTime: startTime, wasCompleted: false, wasInterrupted: true)
+        }
+        
         isRunning = false
         timer?.invalidate()
         timer = nil
+        sessionStartTime = nil // Clear session tracking
         updateDisplay()
         saveTimerState()
         print("Timer stopped")
@@ -77,7 +88,13 @@ class TimerManager: ObservableObject {
     }
     
     private func timerCompleted() {
+        // Log completed session
+        if let startTime = sessionStartTime {
+            logSession(startTime: startTime, wasCompleted: true, wasInterrupted: false)
+        }
+        
         stopTimer()
+        sessionStartTime = nil // Clear session tracking
         persistence.clearTimerState() // Clear saved state when completed
         print("Timer completed! 🎉")
         // TODO: In future sprints, we'll add sound and notifications here
@@ -154,5 +171,69 @@ class TimerManager: ObservableObject {
     
     func setSoundEnabled(_ enabled: Bool) {
         persistence.soundEnabled = enabled
+    }
+    
+    // MARK: - Enhanced Reset Methods
+    
+    /// Reset timer to its original planned duration and title
+    func resetToOriginal() {
+        remainingSeconds = totalDuration
+        updateDisplay()
+        saveTimerState()
+        print("Timer reset to original: \(totalDuration) seconds")
+    }
+    
+    /// Start a completely new session (resets everything including sub-goals)
+    func startNewSession(duration: Int? = nil, title: String? = nil, clearSubGoals: Bool = true) {
+        // Log previous session if it was running
+        if isRunning, let startTime = sessionStartTime {
+            logSession(startTime: startTime, wasCompleted: false, wasInterrupted: true)
+        }
+        
+        stopTimer()
+        
+        // Use provided values or defaults
+        let newDuration = duration ?? persistence.defaultDuration
+        let newTitle = title ?? persistence.lastUsedTitle
+        
+        remainingSeconds = newDuration
+        totalDuration = newDuration
+        mainTitle = newTitle
+        
+        // Optionally clear sub-goals for fresh session
+        if clearSubGoals {
+            SubGoalsManager.shared.clearAllGoals()
+        }
+        
+        updateDisplay()
+        saveTimerState()
+        
+        // Save as last used preferences
+        persistence.lastUsedTitle = newTitle
+        persistence.defaultDuration = newDuration
+        
+        print("New session started: \(newDuration) seconds, title: \(newTitle), sub-goals cleared: \(clearSubGoals)")
+    }
+    
+    // MARK: - Session Logging
+    
+    /// Log a session with current timer and sub-goals state
+    private func logSession(startTime: Date, wasCompleted: Bool, wasInterrupted: Bool) {
+        let endTime = Date()
+        let actualDuration = Int(endTime.timeIntervalSince(startTime))
+        
+        // Get sub-goals summary from SubGoalsManager
+        let subGoalsSummary = SubGoalsManager.shared.getSessionSummary()
+        
+        sessionLogger.logSession(
+            title: mainTitle,
+            plannedDuration: totalDuration,
+            actualDuration: actualDuration,
+            startTime: startTime,
+            endTime: endTime,
+            wasCompleted: wasCompleted,
+            wasInterrupted: wasInterrupted,
+            subGoalsSummary: subGoalsSummary
+        )
     }
 }
