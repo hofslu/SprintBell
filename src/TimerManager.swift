@@ -91,13 +91,21 @@ class TimerManager: ObservableObject {
         // Log completed session
         if let startTime = sessionStartTime {
             logSession(startTime: startTime, wasCompleted: true, wasInterrupted: false)
+            
+            // Send completion notification
+            let subGoalsSummary = SubGoalsManager.shared.getSessionSummary()
+            NotificationManager.shared.sendCompletionNotification(
+                sessionTitle: mainTitle,
+                actualDuration: Int(Date().timeIntervalSince(startTime)),
+                completedGoals: subGoalsSummary.completed.count,
+                totalGoals: subGoalsSummary.completed.count + subGoalsSummary.pending.count
+            )
         }
         
         stopTimer()
         sessionStartTime = nil // Clear session tracking
         persistence.clearTimerState() // Clear saved state when completed
         print("Timer completed! 🎉")
-        // TODO: In future sprints, we'll add sound and notifications here
     }
     
     private func updateDisplay() {

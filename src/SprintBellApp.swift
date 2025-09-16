@@ -41,6 +41,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
                 persistence.appVersion = version
             }
+            
+            // Request notification permissions on first launch
+            Task {
+                let granted = await NotificationManager.shared.requestPermissions()
+                print(granted ? "✅ Notification permissions granted on first launch" : "❌ Notification permissions denied on first launch")
+            }
         }
         
         print("🚀 SprintBell launched successfully")

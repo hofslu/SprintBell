@@ -15,9 +15,48 @@ struct SprintPopoverView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
-                // Header with theme toggle
+                // Header with controls
                 HStack {
+                    // Sound toggle
+                    Button(action: { 
+                        timerManager.setSoundEnabled(!timerManager.getSoundEnabled()) 
+                    }) {
+                        Image(systemName: timerManager.getSoundEnabled() ? "speaker.wave.2" : "speaker.slash")
+                            .font(.system(size: 16, weight: .medium))
+                            .foregroundColor(currentColorScheme == .dark ? .green : .green)
+                            .background(
+                                Circle()
+                                    .fill(Color.green.opacity(0.1))
+                                    .frame(width: 28, height: 28)
+                            )
+                    }
+                    .buttonStyle(.plain)
+                    .help("Sound: \(timerManager.getSoundEnabled() ? "On" : "Off")")
+                    
+                    // Notification toggle
+                    Button(action: { 
+                        Task {
+                            let enabled = await NotificationManager.shared.areNotificationsEnabled()
+                            if !enabled {
+                                let _ = await NotificationManager.shared.requestPermissions()
+                            }
+                        }
+                    }) {
+                        Image(systemName: "bell")
+                            .font(.system(size: 16, weight: .medium))
+                            .foregroundColor(currentColorScheme == .dark ? .blue : .blue)
+                            .background(
+                                Circle()
+                                    .fill(Color.blue.opacity(0.1))
+                                    .frame(width: 28, height: 28)
+                            )
+                    }
+                    .buttonStyle(.plain)
+                    .help("Enable Notifications")
+                    
                     Spacer()
+                    
+                    // Theme toggle
                     Button(action: { themeManager.toggleTheme() }) {
                         Image(systemName: themeManager.currentTheme.systemImage)
                             .font(.system(size: 16, weight: .medium))

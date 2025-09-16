@@ -83,4 +83,15 @@ class StatusBarController: ObservableObject {
             popover.show(relativeTo: button.bounds, of: button, preferredEdge: NSRectEdge.minY)
         }
     }
+    
+    // MARK: - Public Methods
+    
+    /// Show the popover (for external access, e.g., from notifications)
+    func showPopover() {
+        guard let button = statusItem.button else { return }
+        
+        if !popover.isShown {
+            popover.show(relativeTo: button.bounds, of: button, preferredEdge: NSRectEdge.minY)
+        }
+    }
 }
