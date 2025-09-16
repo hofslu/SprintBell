@@ -1,0 +1,38 @@
+[
+    {
+        "key": "cmd+shift+s",
+        "command": "workbench.action.tasks.runTask",
+        "args": "SprintBell: Start 25min Focus",
+        "when": "!inDebugMode"
+    },
+    {
+        "key": "cmd+shift+d",
+        "command": "workbench.action.tasks.runTask", 
+        "args": "SprintBell: Start 50min Deep Work",
+        "when": "!inDebugMode"
+    },
+    {
+        "key": "cmd+shift+c",
+        "command": "workbench.action.tasks.runTask",
+        "args": "SprintBell: Start Custom Sprint",
+        "when": "!inDebugMode"
+    },
+    {
+        "key": "cmd+shift+p",
+        "command": "workbench.action.tasks.runTask",
+        "args": "SprintBell: Pause/Resume",
+        "when": "!inDebugMode"
+    },
+    {
+        "key": "cmd+shift+x",
+        "command": "workbench.action.tasks.runTask",
+        "args": "SprintBell: Stop Sprint", 
+        "when": "!inDebugMode"
+    },
+    {
+        "key": "cmd+shift+n",
+        "command": "workbench.action.tasks.runTask",
+        "args": "SprintBell: Add Note",
+        "when": "!inDebugMode"
+    }
+]

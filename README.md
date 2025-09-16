@@ -10,8 +10,9 @@ SprintBell is a menu bar timer designed specifically for developers, featuring a
 - **Interactive popover** with timer controls and sub-goals checklist  
 - **Theme management** (system/light/dark) with manual toggle
 - **Session persistence** across app restarts
-- **VSCode integration** via tasks, keybindings, and HTTP API
-- **AI coding agent support** with MCP server integration
+- **VSCode integration** via URL schemes (`sprintbell://`) and task templates
+- **Keybinding support** for quick sprint control from VSCode
+- **AI coding agent support** with MCP server integration (roadmap)
 
 ## 🚀 Quick Start
 
@@ -59,7 +60,9 @@ SprintBell/
 - ✅ Sprint 1: Core Menu Bar Timer
 - ✅ Sprint 2: Interactive Popover UI  
 - ✅ Sprint 2.5: UX Improvements (Theme Toggle)
-- 🔄 **Sprint 3: Data Persistence & Notifications** (Active)
+- ✅ Sprint 3: Data Persistence & Notifications (Completed via temp files)
+- ✅ **Sprint 4: VSCode Integration Foundation** (Just Completed!)
+- 🔄 **Sprint 5: HTTP API Server** (Next Up)
 
 **Branch Strategy**:
 - `main` - Stable release

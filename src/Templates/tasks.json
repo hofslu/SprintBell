@@ -1,0 +1,145 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "SprintBell: Start 25min Focus",
+            "type": "shell",
+            "command": "open",
+            "args": [
+                "sprintbell://start?mins=25&title=${workspaceFolderBasename}&goals=focus"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "never",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "SprintBell: Start 50min Deep Work",
+            "type": "shell", 
+            "command": "open",
+            "args": [
+                "sprintbell://start?mins=50&title=${workspaceFolderBasename}&goals=implementation,testing,documentation"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "never", 
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "SprintBell: Start Custom Sprint",
+            "type": "shell",
+            "command": "open", 
+            "args": [
+                "sprintbell://start?mins=${input:sprintDuration}&title=${input:sprintTitle}&goals=${input:sprintGoals}"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "never",
+                "focus": false, 
+                "panel": "shared",
+                "showReuseMessage": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "SprintBell: Pause/Resume",
+            "type": "shell",
+            "command": "open",
+            "args": [
+                "sprintbell://pause"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "never",
+                "focus": false,
+                "panel": "shared", 
+                "showReuseMessage": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "SprintBell: Stop Sprint",
+            "type": "shell",
+            "command": "open",
+            "args": [
+                "sprintbell://stop?result=${input:sprintResult}"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "never",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "SprintBell: Add Note",
+            "type": "shell", 
+            "command": "open",
+            "args": [
+                "sprintbell://note?text=${input:noteText}"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "never",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false
+            },
+            "problemMatcher": []
+        }
+    ],
+    "inputs": [
+        {
+            "id": "sprintDuration",
+            "description": "Sprint duration in minutes",
+            "default": "25",
+            "type": "promptString"
+        },
+        {
+            "id": "sprintTitle", 
+            "description": "Sprint title",
+            "default": "${workspaceFolderBasename}",
+            "type": "promptString"
+        },
+        {
+            "id": "sprintGoals",
+            "description": "Sprint goals (comma-separated)", 
+            "default": "focus,implement,test",
+            "type": "promptString"
+        },
+        {
+            "id": "sprintResult",
+            "description": "Sprint completion status",
+            "default": "Complete",
+            "type": "pickString",
+            "options": [
+                "Complete",
+                "Progress", 
+                "Postponed",
+                "Blocked"
+            ]
+        },
+        {
+            "id": "noteText",
+            "description": "Note to add to current sprint",
+            "default": "",
+            "type": "promptString"
+        }
+    ]
+}
