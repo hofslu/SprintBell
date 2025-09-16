@@ -1,5 +1,4 @@
 import Foundation
-import SwiftUI
 
 /// Manages sub-goals with automatic UserDefaults persistence
 class SubGoalsManager: ObservableObject {
