@@ -30,5 +30,30 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if let timerManager = timerManager, let themeManager = themeManager {
             statusBarController = StatusBarController(timerManager: timerManager, themeManager: themeManager)
         }
+        
+        // Handle first launch
+        let persistence = TimerDefaults.shared
+        if persistence.isFirstLaunch {
+            print("🆕 Welcome to SprintBell! First launch detected.")
+            persistence.isFirstLaunch = false
+            
+            // Set current app version
+            if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
+                persistence.appVersion = version
+            }
+        }
+        
+        print("🚀 SprintBell launched successfully")
+    }
+    
+    func applicationWillTerminate(_ notification: Notification) {
+        // Force save all state before app terminates
+        timerManager?.forceSave()
+        print("💾 App state saved before termination")
+    }
+    
+    func applicationDidResignActive(_ notification: Notification) {
+        // Save state when app loses focus
+        timerManager?.forceSave()
     }
 }
