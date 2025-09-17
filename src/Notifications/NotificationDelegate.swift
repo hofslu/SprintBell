@@ -1,5 +1,6 @@
 import Foundation
 import UserNotifications
+import AppKit
 
 class NotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
     static let shared = NotificationDelegate()

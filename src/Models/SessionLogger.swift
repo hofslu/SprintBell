@@ -29,7 +29,7 @@ class SessionLogger {
             do {
                 let jsonData = try encoder.encode(sessionData)
                 guard let jsonString = String(data: jsonData, encoding: .utf8) else {
-                    logger.error("Failed to convert session data to string")
+                    print("❌ Failed to convert session data to string")
                     return
                 }
                 

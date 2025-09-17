@@ -252,7 +252,7 @@ struct PresetButtonsView: View {
                 
                 Button("Custom") {
                     // TODO: Show custom duration picker in future
-                    timerManager.startNewSession(duration: 30 * 60, title: "Focus Session", clearSubGoals: false)
+                    timerManager.startNewSession(duration: 2, title: "Focus Session", clearSubGoals: false)
                 }
                 .buttonStyle(.bordered)
                 .tint(colorScheme == .dark ? .orange.opacity(0.7) : .orange)
