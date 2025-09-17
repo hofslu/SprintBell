@@ -95,6 +95,15 @@ class TimerManager: ObservableObject {
         // Log completed session
         if let startTime = sessionStartTime {
             logSession(startTime: startTime, wasCompleted: true, wasInterrupted: false)
+            
+            // Send completion notification
+            let subGoalsSummary = SubGoalsManager.shared.getSessionSummary()
+            NotificationManager.shared.sendCompletionNotification(
+                sessionTitle: mainTitle,
+                actualDuration: Int(Date().timeIntervalSince(startTime)),
+                completedGoals: subGoalsSummary.completed.count,
+                totalGoals: subGoalsSummary.completed.count + subGoalsSummary.pending.count
+            )
         }
         
         // Play completion sound

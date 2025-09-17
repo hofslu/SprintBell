@@ -23,6 +23,10 @@ class TimerDefaults: ObservableObject {
         // App state
         case firstLaunch = "SprintBell.app.firstLaunch"
         case appVersion = "SprintBell.app.version"
+        
+        // Notification preferences  
+        case notificationsEnabled = "SprintBell.preferences.notificationsEnabled"
+        case showNotificationActions = "SprintBell.preferences.showNotificationActions"
     }
     
     // MARK: - Singleton
@@ -180,6 +184,28 @@ class TimerDefaults: ObservableObject {
         }
         set {
             userDefaults.set(newValue, forKey: Keys.appVersion.rawValue)
+        }
+    }
+    
+    // MARK: - Notification Preferences
+    
+    var notificationsEnabled: Bool {
+        get { 
+            // Default to true if not set, let the system handle actual permissions
+            return userDefaults.object(forKey: Keys.notificationsEnabled.rawValue) == nil ? true : userDefaults.bool(forKey: Keys.notificationsEnabled.rawValue)
+        }
+        set { 
+            userDefaults.set(newValue, forKey: Keys.notificationsEnabled.rawValue) 
+        }
+    }
+    
+    var showNotificationActions: Bool {
+        get { 
+            // Default to true if not set
+            return userDefaults.object(forKey: Keys.showNotificationActions.rawValue) == nil ? true : userDefaults.bool(forKey: Keys.showNotificationActions.rawValue)
+        }
+        set { 
+            userDefaults.set(newValue, forKey: Keys.showNotificationActions.rawValue) 
         }
     }
     
